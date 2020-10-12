@@ -1,0 +1,9 @@
+[package]
+name = "gw2al_bindings"
+version = "0.1.0"
+authors = ["Greaka <mrgreaka@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+log = { version = "0.4", optional = true }
+widestring = "0.4"
