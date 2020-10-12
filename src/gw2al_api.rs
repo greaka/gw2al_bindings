@@ -31,6 +31,8 @@ pub struct gw2al_addon_dsc {
     pub dependList:  *mut gw2al_addon_dsc,
 }
 
+unsafe impl Sync for gw2al_addon_dsc {}
+
 #[repr(i32)]
 pub enum gw2al_api_ret {
     OK               = 0,
@@ -52,7 +54,7 @@ pub enum gw2al_log_level {
     DEBUG = 3,
 }
 
-#[cfg(log)]
+#[cfg(feature = "log")]
 impl From<log::Level> for gw2al_log_level {
     fn from(level: log::Level) -> Self {
         use log::Level;

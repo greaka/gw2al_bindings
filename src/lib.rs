@@ -1,6 +1,6 @@
 mod gw2al_api;
 pub use gw2al_api::*;
-#[cfg(log)]
+#[cfg(feature = "log")]
 use log::{Metadata, Record};
 use std::{ffi::c_void, ptr::NonNull};
 use widestring::{U16CStr, U16CString};
@@ -10,6 +10,13 @@ pub struct Gw2Al<'a> {
 }
 
 impl Gw2Al<'_> {
+    pub fn new(core: *mut gw2al_core_vtable) -> Self {
+        let me = Self {
+            vtable: unsafe { &*core },
+        };
+        me
+    }
+
     pub fn hash_name(&self, name: &str) -> gw2al_hashed_name {
         let name = U16CString::from_str(name);
         let name = if name.is_err() {
@@ -106,7 +113,7 @@ impl Gw2Al<'_> {
     }
 }
 
-#[cfg(log)]
+#[cfg(feature = "log")]
 impl log::Log for Gw2Al<'_> {
     fn enabled(&self, _metadata: &Metadata<'_>) -> bool {
         true
