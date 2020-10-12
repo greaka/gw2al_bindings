@@ -2,7 +2,7 @@ mod gw2al_api;
 pub use gw2al_api::*;
 #[cfg(log)]
 use log::{Metadata, Record};
-use std::ffi::c_void;
+use std::{ffi::c_void, ptr::NonNull};
 use widestring::{U16CStr, U16CString};
 
 pub struct Gw2Al<'a> {
@@ -54,12 +54,13 @@ impl Gw2Al<'_> {
         unsafe { (self.vtable.unload_addon)(name) }
     }
 
-    pub fn query_addon(&self, name: gw2al_hashed_name) -> Result<Gw2AlAddonDsc, ()> {
+    pub fn query_addon(&self, name: gw2al_hashed_name) -> Option<Gw2AlAddonDsc> {
         let dsc = unsafe { (self.vtable.query_addon)(name) };
         if unsafe { (&*dsc).name }.is_null() {
-            return Err(());
+            return None;
         }
-        Ok(dsc.into())
+        let dsc = unsafe { NonNull::new_unchecked(dsc) };
+        Some(dsc.into())
     }
 
     pub fn watch_event(
@@ -130,15 +131,20 @@ pub struct Gw2AlAddonDsc {
     pub dependency_list: Vec<Gw2AlAddonDsc>,
 }
 
-impl From<*mut gw2al_addon_dsc> for Gw2AlAddonDsc {
-    fn from(raw: *mut gw2al_addon_dsc) -> Self {
-        let raw = unsafe { &*raw };
+impl From<NonNull<gw2al_addon_dsc>> for Gw2AlAddonDsc {
+    fn from(raw: NonNull<gw2al_addon_dsc>) -> Self {
+        let raw = unsafe { raw.as_ref() };
         let mut i = 0;
         let mut deps = Vec::new();
         loop {
             unsafe {
                 let offset = raw.dependList.offset(i);
-                let obj = &*offset;
+                let offset = NonNull::new(offset);
+                if offset.is_none() {
+                    break;
+                }
+                let offset = offset.unwrap();
+                let obj = offset.as_ref();
                 if obj.name.is_null() {
                     break;
                 }
