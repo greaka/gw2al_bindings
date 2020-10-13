@@ -31,6 +31,7 @@ pub struct gw2al_addon_dsc {
     pub dependList:  *mut gw2al_addon_dsc,
 }
 
+unsafe impl Send for gw2al_addon_dsc {}
 unsafe impl Sync for gw2al_addon_dsc {}
 
 #[repr(i32)]
