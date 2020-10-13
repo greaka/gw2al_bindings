@@ -11,20 +11,14 @@ pub struct Gw2Al<'a> {
 
 impl Gw2Al<'_> {
     pub fn new(core: *mut gw2al_core_vtable) -> Self {
-        let me = Self {
+        Self {
             vtable: unsafe { &*core },
-        };
-        me
+        }
     }
 
     pub fn hash_name(&self, name: &str) -> gw2al_hashed_name {
-        let name = U16CString::from_str(name);
-        let name = if name.is_err() {
-            std::ptr::null_mut()
-        } else {
-            name.unwrap().as_ptr() as _
-        };
-        unsafe { (self.vtable.hash_name)(name) }
+        let name = U16CString::from_str(name).unwrap_or_default();
+        unsafe { (self.vtable.hash_name)(name.as_ptr() as _) }
     }
 
     pub fn register_function(
@@ -48,13 +42,8 @@ impl Gw2Al<'_> {
     }
 
     pub fn load_addon(&self, name: &str) -> gw2al_api_ret {
-        let name = U16CString::from_str(name);
-        let name = if name.is_err() {
-            std::ptr::null_mut()
-        } else {
-            name.unwrap().as_ptr() as _
-        };
-        unsafe { (self.vtable.load_addon)(name) }
+        let name = U16CString::from_str(name).unwrap_or_default();
+        unsafe { (self.vtable.load_addon)(name.as_ptr() as _) }
     }
 
     pub fn unload_addon(&self, name: gw2al_hashed_name) -> gw2al_api_ret {
@@ -66,8 +55,8 @@ impl Gw2Al<'_> {
         if unsafe { (&*dsc).name }.is_null() {
             return None;
         }
-        let dsc = unsafe { NonNull::new_unchecked(dsc) };
-        Some(dsc.into())
+        let desc = unsafe { NonNull::new_unchecked(dsc) };
+        Some(desc.into())
     }
 
     pub fn watch_event(
@@ -97,19 +86,9 @@ impl Gw2Al<'_> {
     }
 
     pub fn log_text(&self, level: gw2al_log_level, source: &str, text: &str) {
-        let source = U16CString::from_str(source);
-        let source = if source.is_err() {
-            std::ptr::null_mut()
-        } else {
-            source.unwrap().as_ptr() as _
-        };
-        let text = U16CString::from_str(text);
-        let text = if text.is_err() {
-            std::ptr::null_mut()
-        } else {
-            text.unwrap().as_ptr() as _
-        };
-        unsafe { (self.vtable.log_text)(level, source, text) }
+        let src = U16CString::from_str(source).unwrap_or_default();
+        let txt = U16CString::from_str(text).unwrap_or_default();
+        unsafe { (self.vtable.log_text)(level, src.as_ptr() as _, txt.as_ptr() as _) }
     }
 }
 
@@ -125,7 +104,8 @@ impl log::Log for Gw2Al<'_> {
             record.file().unwrap_or_default(),
             record.line().unwrap_or_default()
         );
-        self.log_text(record.level().into(), &from, &record.args().to_string());
+        let body = record.args().to_string();
+        self.log_text(record.level().into(), &from, &body);
     }
 
     fn flush(&self) {}
