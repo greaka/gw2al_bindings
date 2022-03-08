@@ -99,11 +99,7 @@ impl log::Log for Gw2Al<'_> {
     }
 
     fn log(&self, record: &Record<'_>) {
-        let from = format!(
-            "{}:{}",
-            record.file().unwrap_or_default(),
-            record.line().unwrap_or_default()
-        );
+        let from = record.target().split("::").next().unwrap();
         let body = record.args().to_string();
         self.log_text(record.level().into(), &from, &body);
     }
