@@ -44,6 +44,7 @@ unsafe impl Send for gw2al_addon_dsc {}
 unsafe impl Sync for gw2al_addon_dsc {}
 
 #[repr(i32)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub enum gw2al_api_ret {
     OK               = 0,
     FAIL             = 1,
@@ -57,6 +58,7 @@ pub enum gw2al_api_ret {
 }
 
 #[repr(i32)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub enum gw2al_log_level {
     INFO  = 0,
     ERR   = 1,
