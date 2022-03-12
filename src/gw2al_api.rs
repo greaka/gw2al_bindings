@@ -21,23 +21,23 @@ pub const GW2AL_CORE_FUNN_LOG_TEXT: gw2al_hashed_name = 14;
 pub const GW2AL_CORE_FUNN_D3DCREATE_HOOK: gw2al_hashed_name = 15;
 
 pub const EMPTY_ADDON_DSC: gw2al_addon_dsc = gw2al_addon_dsc {
-    name:        std::ptr::null(),
+    name: std::ptr::null(),
     description: std::ptr::null(),
-    majorVer:    0,
-    minorVer:    0,
-    revision:    0,
-    dependList:  std::ptr::null_mut(),
+    majorVer: 0,
+    minorVer: 0,
+    revision: 0,
+    dependList: std::ptr::null_mut(),
 };
 
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct gw2al_addon_dsc {
-    pub name:        *const u16,
+    pub name: *const u16,
     pub description: *const u16,
-    pub majorVer:    u8,
-    pub minorVer:    u8,
-    pub revision:    u32,
-    pub dependList:  *mut gw2al_addon_dsc,
+    pub majorVer: u8,
+    pub minorVer: u8,
+    pub revision: u32,
+    pub dependList: *mut gw2al_addon_dsc,
 }
 
 unsafe impl Send for gw2al_addon_dsc {}
@@ -46,13 +46,13 @@ unsafe impl Sync for gw2al_addon_dsc {}
 #[repr(i32)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub enum gw2al_api_ret {
-    OK               = 0,
-    FAIL             = 1,
-    IN_USE           = 2,
-    NOT_FOUND        = 3,
-    BAD_DLL          = 4,
-    DEP_NOT_LOADED   = 5,
-    DEP_OUTDATED     = 6,
+    OK = 0,
+    FAIL = 1,
+    IN_USE = 2,
+    NOT_FOUND = 3,
+    BAD_DLL = 4,
+    DEP_NOT_LOADED = 5,
+    DEP_OUTDATED = 6,
     DEP_STILL_LOADED = 7,
     STATIC_LIMIT_HIT = 8,
 }
@@ -60,9 +60,9 @@ pub enum gw2al_api_ret {
 #[repr(i32)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub enum gw2al_log_level {
-    INFO  = 0,
-    ERR   = 1,
-    WARN  = 2,
+    INFO = 0,
+    ERR = 1,
+    WARN = 2,
     DEBUG = 3,
 }
 
@@ -86,15 +86,15 @@ pub type gw2al_event_id = u32;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct gw2al_core_vtable {
-    pub hash_name:           unsafe extern "C" fn(name: *mut u16) -> u64,
+    pub hash_name: unsafe extern "C" fn(name: *mut u16) -> u64,
     pub unregister_function: unsafe extern "C" fn(name: gw2al_hashed_name),
-    pub query_function:      unsafe extern "C" fn(name: gw2al_hashed_name) -> *mut c_void,
-    pub unload_addon:        unsafe extern "C" fn(name: gw2al_hashed_name) -> gw2al_api_ret,
-    pub load_addon:          unsafe extern "C" fn(name: *mut u16) -> gw2al_api_ret,
-    pub query_addon:         unsafe extern "C" fn(name: gw2al_hashed_name) -> *mut gw2al_addon_dsc,
-    pub query_event:         unsafe extern "C" fn(name: gw2al_hashed_name) -> gw2al_event_id,
-    pub trigger_event:       unsafe extern "C" fn(id: gw2al_event_id, data: *mut c_void) -> u32,
-    pub client_unload:       unsafe extern "C" fn(),
+    pub query_function: unsafe extern "C" fn(name: gw2al_hashed_name) -> *mut c_void,
+    pub unload_addon: unsafe extern "C" fn(name: gw2al_hashed_name) -> gw2al_api_ret,
+    pub load_addon: unsafe extern "C" fn(name: *mut u16) -> gw2al_api_ret,
+    pub query_addon: unsafe extern "C" fn(name: gw2al_hashed_name) -> *mut gw2al_addon_dsc,
+    pub query_event: unsafe extern "C" fn(name: gw2al_hashed_name) -> gw2al_event_id,
+    pub trigger_event: unsafe extern "C" fn(id: gw2al_event_id, data: *mut c_void) -> u32,
+    pub client_unload: unsafe extern "C" fn(),
     pub fill_vtable:
         unsafe extern "C" fn(nameList: *mut gw2al_hashed_name, vtable: *mut *mut c_void),
     pub unwatch_event: unsafe extern "C" fn(id: gw2al_event_id, subscriber: gw2al_hashed_name),

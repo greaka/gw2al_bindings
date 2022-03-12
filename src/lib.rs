@@ -108,9 +108,9 @@ impl log::Log for Gw2Al<'_> {
 }
 
 pub struct Gw2AlAddonDsc {
-    pub name:            String,
-    pub description:     String,
-    pub version:         (u8, u8, u32),
+    pub name: String,
+    pub description: String,
+    pub version: (u8, u8, u32),
     pub dependency_list: Vec<Gw2AlAddonDsc>,
 }
 
@@ -137,9 +137,9 @@ impl From<NonNull<gw2al_addon_dsc>> for Gw2AlAddonDsc {
             }
         }
         Self {
-            name:            unsafe { U16CStr::from_ptr_str(raw.name) }.to_string_lossy(),
-            description:     unsafe { U16CStr::from_ptr_str(raw.name) }.to_string_lossy(),
-            version:         (raw.majorVer, raw.minorVer, raw.revision),
+            name: unsafe { U16CStr::from_ptr_str(raw.name) }.to_string_lossy(),
+            description: unsafe { U16CStr::from_ptr_str(raw.name) }.to_string_lossy(),
+            version: (raw.majorVer, raw.minorVer, raw.revision),
             dependency_list: deps,
         }
     }
