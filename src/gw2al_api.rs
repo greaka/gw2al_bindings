@@ -20,6 +20,15 @@ pub const GW2AL_CORE_FUNN_CLIENT_UNLOAD: gw2al_hashed_name = 13;
 pub const GW2AL_CORE_FUNN_LOG_TEXT: gw2al_hashed_name = 14;
 pub const GW2AL_CORE_FUNN_D3DCREATE_HOOK: gw2al_hashed_name = 15;
 
+pub const EMPTY_ADDON_DSC: gw2al_addon_dsc = gw2al_addon_dsc {
+    name:        std::ptr::null(),
+    description: std::ptr::null(),
+    majorVer:    0,
+    minorVer:    0,
+    revision:    0,
+    dependList:  std::ptr::null_mut(),
+};
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct gw2al_addon_dsc {
